@@ -32,7 +32,7 @@ args = parser.parse_args()
 # 定义一个配置类，设置默认选项
 class CFG:
     submit = args.submit
-    train_path = '../inputs/train/train_valid/train_parquet'
+    train_path = '../inputs/train/recall_rank/recall_tr'
     test_path = '../inputs/train/train_valid/test_parquet'
     lookback = 2
     topk = 50
@@ -57,7 +57,9 @@ if not args.eval:
 
         train_df = read_data(train_files)
         test_df = read_data(test_files)
-        data_df = pl.concat([train_df, test_df], how='vertical')
+        # data_df = pl.concat([train_df, test_df], how='vertical')
+        # 取消合并，只使用训练集计算共现矩阵，避免测试集数据泄露
+        data_df = train_df
         print(f'Total data shape: {data_df.shape}')
 
         weights = {
